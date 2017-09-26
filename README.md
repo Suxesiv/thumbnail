@@ -2,7 +2,7 @@
 
 Creates just thumbnails and nothing else...
 
-Please make sure you use at least PHP 7 and that Imagick is available.
+Please make sure you use at least PHP 7.1 and that Imagick is available.
 
 ```php
 <?php
