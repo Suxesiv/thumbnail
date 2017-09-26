@@ -1,8 +1,6 @@
 <?php
 
-
-namespace AppBundle\Service;
-
+namespace Suxesiv;
 
 use Imagick;
 use InvalidArgumentException;
