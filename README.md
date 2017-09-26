@@ -23,7 +23,7 @@ $thumbSrc = $thumb
 <img src="<?= $thumbSrc ?>">
 ```
 
-If you don't like the thumbnails try a diffrent mode:
+If you don't like the thumbnails try a different mode:
 
 ```php
 <?php
