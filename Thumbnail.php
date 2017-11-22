@@ -5,20 +5,51 @@ namespace Suxesiv;
 use Imagick;
 use InvalidArgumentException;
 
+/**
+ * Class Thumbnail
+ * @package Suxesiv
+ */
 class Thumbnail
 {
     const MODE_ADAPTIVE = 'adaptive';
     const MODE_FILLED = 'filled';
     const MODE_BESTFIT = 'bestfit';
 
+    /**
+     * @var string
+     */
     private $cacheWebFolder;
+
+    /**
+     * @var string
+     */
     private $cacheAbsoluteFolder;
 
+    /**
+     * @var string
+     */
     private $src;
+
+    /**
+     * @var int
+     */
     private $width;
+
+    /**
+     * @var int
+     */
     private $height;
+
+    /**
+     * @var string
+     */
     private $mode;
 
+    /**
+     * Thumbnail constructor.
+     * @param string $webRoot
+     * @param string $cacheFolder
+     */
     public function __construct($webRoot, $cacheFolder = '/_thumbnails_')
     {
         $this->cacheWebFolder = $cacheFolder;
@@ -26,25 +57,41 @@ class Thumbnail
         $this->mode = self::MODE_ADAPTIVE;
     }
 
-    public function setSrc(string $src)
+    /**
+     * @param string $src
+     * @return $this
+     */
+    public function setSrc($src)
     {
         $this->src = $src;
         return $this;
     }
 
-    public function setWidth(int $width)
+    /**
+     * @param int $width
+     * @return $this
+     */
+    public function setWidth($width)
     {
         $this->width = $width;
         return $this;
     }
 
-    public function setHeight(int $height)
+    /**
+     * @param int $height
+     * @return $this
+     */
+    public function setHeight($height)
     {
         $this->height = $height;
         return $this;
     }
 
-    public function setMode(string $mode)
+    /**
+     * @param string $mode
+     * @return $this
+     */
+    public function setMode($mode)
     {
         if (!in_array($mode, [self::MODE_BESTFIT, self::MODE_FILLED, self::MODE_ADAPTIVE], true)) {
             throw new InvalidArgumentException('Invalid mode provided.');
@@ -53,7 +100,11 @@ class Thumbnail
         return $this;
     }
 
-    public function create() : string
+    /**
+     * @return string
+     * @throws \InvalidArgumentException
+     */
+    public function create()
     {
         $this->checkParams();
 
@@ -69,7 +120,11 @@ class Thumbnail
         return $cacheWebPath;
     }
 
-    private function checkParams() : void
+    /**
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function checkParams()
     {
         $requiredProperties = [
             'src',
@@ -85,25 +140,31 @@ class Thumbnail
         }
     }
 
-    private function getCacheName() : string
+    /**
+     * @return string
+     */
+    private function getCacheName()
     {
         return sha1(sha1($this->src) . $this->width . $this->height . $this->mode) . '.' . $this->getFileExtension($this->src);
     }
 
-    private function createThumbnail() : string
+    /**
+     * @return string
+     */
+    private function createThumbnail()
     {
         $handle = fopen($this->src, 'rb');
         $imagick = new Imagick();
         $imagick->readImageFile($handle);
 
         switch ($this->mode) {
-            case Thumbnail::MODE_ADAPTIVE:
+            case self::MODE_ADAPTIVE:
                 $imagick->cropThumbnailImage($this->width, $this->height);
                 break;
-            case Thumbnail::MODE_FILLED:
+            case self::MODE_FILLED:
                 $imagick->thumbnailImage($this->width, $this->height, true, true);
                 break;
-            case Thumbnail::MODE_BESTFIT:
+            case self::MODE_BESTFIT:
                 $imagick->thumbnailImage($this->width, $this->height, true);
                 break;
         }
@@ -111,7 +172,11 @@ class Thumbnail
         return $imagick->getImageBlob();
     }
 
-    private function saveFile($path, $content) : void
+    /**
+     * @param string $path
+     * @param mixed|string $content
+     */
+    private function saveFile($path, $content)
     {
         $dirname = pathinfo($path, PATHINFO_DIRNAME);
 
@@ -122,6 +187,10 @@ class Thumbnail
         file_put_contents($path, $content);
     }
 
+    /**
+     * @param string $absolutePath
+     * @return mixed
+     */
     private function getFileExtension($absolutePath)
     {
         return pathinfo($absolutePath, PATHINFO_EXTENSION);

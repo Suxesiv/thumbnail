@@ -1,0 +1,20 @@
+{
+    "name": "suxesiv/thumbnail",
+    "description": "Creates just thumbnails and nothing else...",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fabian Wüthrich",
+            "email": "fabian.wuethrich@outlook.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4",
+        "ext-imagick": "*"
+    },
+    "autoload": {
+        "files": [
+            "Thumbnail.php"
+        ]
+    }
+}
