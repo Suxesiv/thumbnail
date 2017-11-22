@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Suxesiv;
 
@@ -50,7 +51,7 @@ class Thumbnail
      * @param string $webRoot
      * @param string $cacheFolder
      */
-    public function __construct($webRoot, $cacheFolder = '/_thumbnails_')
+    public function __construct(string $webRoot, string $cacheFolder = '/_thumbnails_')
     {
         $this->cacheWebFolder = $cacheFolder;
         $this->cacheAbsoluteFolder = $webRoot . $this->cacheWebFolder;
@@ -61,7 +62,7 @@ class Thumbnail
      * @param string $src
      * @return $this
      */
-    public function setSrc($src)
+    public function setSrc(string $src): self
     {
         $this->src = $src;
         return $this;
@@ -71,7 +72,7 @@ class Thumbnail
      * @param int $width
      * @return $this
      */
-    public function setWidth($width)
+    public function setWidth(int $width): self
     {
         $this->width = $width;
         return $this;
@@ -81,7 +82,7 @@ class Thumbnail
      * @param int $height
      * @return $this
      */
-    public function setHeight($height)
+    public function setHeight(int $height): self
     {
         $this->height = $height;
         return $this;
@@ -90,8 +91,9 @@ class Thumbnail
     /**
      * @param string $mode
      * @return $this
+     * @throws \InvalidArgumentException
      */
-    public function setMode($mode)
+    public function setMode(string $mode): self
     {
         if (!in_array($mode, [self::MODE_BESTFIT, self::MODE_FILLED, self::MODE_ADAPTIVE], true)) {
             throw new InvalidArgumentException('Invalid mode provided.');
@@ -104,7 +106,7 @@ class Thumbnail
      * @return string
      * @throws \InvalidArgumentException
      */
-    public function create()
+    public function create(): string
     {
         $this->checkParams();
 
@@ -124,7 +126,7 @@ class Thumbnail
      *
      * @throws \InvalidArgumentException
      */
-    private function checkParams()
+    private function checkParams(): void
     {
         $requiredProperties = [
             'src',
@@ -143,7 +145,7 @@ class Thumbnail
     /**
      * @return string
      */
-    private function getCacheName()
+    private function getCacheName(): string
     {
         return sha1(sha1($this->src) . $this->width . $this->height . $this->mode) . '.' . $this->getFileExtension($this->src);
     }
@@ -151,7 +153,7 @@ class Thumbnail
     /**
      * @return string
      */
-    private function createThumbnail()
+    private function createThumbnail(): string
     {
         $handle = fopen($this->src, 'rb');
         $imagick = new Imagick();
@@ -176,7 +178,7 @@ class Thumbnail
      * @param string $path
      * @param mixed|string $content
      */
-    private function saveFile($path, $content)
+    private function saveFile(string $path, string $content): void
     {
         $dirname = pathinfo($path, PATHINFO_DIRNAME);
 
@@ -191,7 +193,7 @@ class Thumbnail
      * @param string $absolutePath
      * @return mixed
      */
-    private function getFileExtension($absolutePath)
+    private function getFileExtension(string $absolutePath)
     {
         return pathinfo($absolutePath, PATHINFO_EXTENSION);
     }
