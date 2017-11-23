@@ -193,6 +193,15 @@ class Thumbnail
      */
     private function getFileExtension($absolutePath)
     {
-        return pathinfo($absolutePath, PATHINFO_EXTENSION);
+        $extension = pathinfo($absolutePath, PATHINFO_EXTENSION);
+
+        // if url, prevent query string being appended to extension
+        preg_match('/^(\.?[a-z0-9_-]+).*$/i', $extension, $matches);
+
+        if (!empty($matches) && isset($matches[1])) {
+            $extension = $matches[1];
+        }
+
+        return $extension;
     }
 }
